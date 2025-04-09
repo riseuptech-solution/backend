@@ -8,4 +8,4 @@ const userRoute=express.Router()
 userRoute.post("/login",login)
 userRoute.post("/logout",logout)
 userRoute.post("/create",createUser)
-module.exports=[userRoute]
+module.exports={userRoute}

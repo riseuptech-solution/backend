@@ -1,6 +1,6 @@
 const bcrypt=require("bcrypt")
 const UserSchema=require("../../models/UserModel")
-const genToken=require("../../utils/jwt")
+const {genToken}=require("../../utils/jwt")
 // login controller
 const login=async(req,res)=>{
 try {
@@ -16,10 +16,12 @@ if(!isMach)
     {
    return res.status(401).json({error:"Invalid email or password"})
    }
-   const id=user._id
-   
-const token=genToken(id)
+   const id=user._id.toString()
+ 
+const token= genToken(id)
+// define cookie
 res.cookie("token",token,{httpOnly:true, maxAge: 24*60*60*1000})
+// return success message
 return res.status(200).json({message:"authenticated user ",token})
 } catch (error) {
     return res.status(500).json({error:"some error"+error.message})

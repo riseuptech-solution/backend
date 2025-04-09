@@ -1,9 +1,10 @@
 var jwt = require("jsonwebtoken")
 const genToken=(id)=>{
     try {
-        const token=jwt.sign({id:id},process.env.SECRET,{expiresIn:"1h"})
+        const token= jwt.sign({id:id},process.env.SECRET,{expiresIn:"1h"})
         return token
     } catch (error) {
+        console.log(error)
         return error.message
     }
  
