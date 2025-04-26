@@ -1,19 +1,21 @@
 const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
 const UserSchema=require("../../models/UserModel")
 const {genToken}=require("../../utils/jwt")
 // login controller
 const login=async(req,res)=>{
 try {
-    const {email,password}=req.body
-    const user=await UserSchema.findOne({email:email})
-    if(!user)
+const bodyData=req.body
+const {email,password}=bodyData.body
+const user=await UserSchema.findOne({email:email})
+if(!user)
      {
     return res.status(401).json({error:"Invalid email or password"})
     }
-    // check password is correct or not if user email exist
+// check password is correct or not if user email exist
 const isMach=await bcrypt.compare(password,user.password)
 if(!isMach)
-    {
+  {
    return res.status(401).json({error:"Invalid email or password"})
    }
    const id=user._id.toString()
@@ -36,8 +38,8 @@ const logout=async(req,res)=>{
             return res.status(401).json({erro:"user not authenticated"}); // Unauthorized
            }
 
-        const decoded=jwt.verify(token,process.env.SECRET_KEY)
-        const user=await UserSchema.findByPk(decoded.id,{logging: false})
+        const decoded=jwt.verify(token,process.env.SECRET)
+        const user=await UserSchema.findById(decoded.id)
 
         if(!user)
             {
@@ -49,6 +51,7 @@ const logout=async(req,res)=>{
             return res.json({ message: 'Logout successful' });
        
     } catch (err) {
+        console.log(err)
             return res.status(500).json({ error: "Internal server error" });
     }
 }

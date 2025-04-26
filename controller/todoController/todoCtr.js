@@ -4,7 +4,8 @@ const TodoSchema=require("../../models/TodoModel")
 const createCtr=async(req,res)=>{
 const userId=req.id
 try {
-    const {title,description}=req.body
+    const bodyData=req.body
+    const {title,description}=bodyData.body
     const todo=await TodoSchema.findOne({title,user:userId})
     if(todo){
         return res.status(400).json({error:"Todo already exist"})
@@ -47,8 +48,10 @@ const todo=async(req,res)=>{
 
 const updateTodo=async(req,res)=>{
             try {
+               
                 const {id}=req.params
                 const userId=req.id
+                const bodyData=req.body
                 // validate mongodb id
                 if(!mongoose.Types.ObjectId.isValid(id))
                  return res.status(404).json({error:"Please use valid id"})
@@ -56,7 +59,7 @@ const updateTodo=async(req,res)=>{
                 if(!todo){
                     return res.status(404).json({error:"todo not found"})
                     }
-            const updateTodo=await TodoSchema.findOneAndUpdate({_id:id},req.body,{new:true})
+            const updateTodo=await TodoSchema.findOneAndUpdate({_id:id},bodyData.body,{new:true})
             return res.status(200).json({updatedTodo:updateTodo})
         } catch (error) {
             return res.status(500).json({error:"some error"+error.message})
